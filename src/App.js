@@ -1,18 +1,31 @@
 import React, { Component } from "react"
+import Overview from "./components/Overview"
 
 class App extends Component {
   constructor() {
-    super()
+    super();
 
+    this.state = {
+      task: { text: ''},
+      tasks: [],
+    };
   }
-  
-  render()
-    {
-      return (
-      <div className="App">
-        <hi>Hello Guapo</hi>
+
+  render() {
+    const { task, tasks } = this.state;
+
+    return (
+      <div>
+        <form>
+          <label htmlFor="taskInput">Enter task</label>
+          <input type="text" id="taskInput"/>
+          <button type="submit">
+            Add Task
+          </button>
+        </form>
+        <Overview />
       </div>
-    )
+    );
   }
 }
 
