@@ -1,19 +1,32 @@
-import React, {Component} from "react"; 
+import React from "react"; 
  
-class Overview extends Component { 
-    constructor(){ 
-        super(); 
-         
-        } 
+const Overview = (props) => {
+    const { tasks } = props;
+    const completedStyle = {
+        fontStyle: "italic",
+        color: "#cdcdcd",
+        textDecoration: "line-through"
+    }
  
-    render(){ 
- 
-        return( 
-            <div> 
-                <h1>Overview</h1> 
-            </div> 
-        ) 
-    } 
+    return( 
+        <div> 
+                {tasks.map((task, index) => {
+                    return <div key={task.id}>
+                        
+                            <input 
+                                type="checkbox"
+                                checked={() => props.handleCompleted(task.id)}
+                                onChange={() => props.handleTask(task.id)}
+                            />
+                        <p style={task.completed? completedStyle : null}>
+                            {task.id}
+                            {index + 1} {task.text}
+                        </p>
+                    </div>
+                })}
+        </div> 
+    ) 
+    
 } 
  
 export default Overview

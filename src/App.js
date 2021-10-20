@@ -1,52 +1,74 @@
-import React, { Component } from "react"
+import React, { useState } from "react"
 import Overview from "./components/Overview"
+import uniqid from "uniqid"
 
-class App extends Component {
-  constructor() {
-    super();
+function App() {
+  const [text, setText] = useState('')
+  const [tasks, setTasks] = useState([])
 
-    this.state = {
-      task: { text: ''},
-      tasks: [],
-    };
+  const completedStyle = {
+    fontStyle: "italic",
+    color: "#cdcdcd",
+    textDecoration: "line-through"
+}
+
+  const handleChange = (e) => {
+    setText( e.target.value)
   }
 
-  handleChange = (e) => {
-    this.setState({
-      task : {
-        text : e.target.value,
+  const createTask = (taskName) =>{
+    const newTask= {
+      id: uniqid(),
+      text: taskName,
+      completed: false
+    }
+    setTasks([...tasks, newTask ])
+  }
+
+  const handleComplete = (id) => {
+    const data = tasks.map(task => {
+      if(task.id === id) {
+        task.completed = !task.completed
       }
+      return task
     })
+    setTasks(data)
   }
 
-  onSubmitTask = (e) => {
-    e.preventDefault();
-    this.setState({
-      tasks : this.state.tasks.concat(this.state.task),
-      task: { text : ""},
-    })
+  const deleteTask = (id) => {
+    const filteredData = tasks.filter(task => task.id !== id)
+    setTasks(filteredData)
   }
-
-  render() {
-    const { task, tasks } = this.state;
 
     return (
       <div>
-        <form onSubmit={this.onSubmitTask}>
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          createTask(text)
+          setText('')
+        }}>
           <label htmlFor="taskInput">Enter task</label>
           <input 
             type="text"
             id="taskInput"
-            onChange={this.handleChange}
-            value={task.text}/>
+            onChange={handleChange}
+            value={text}/>
           <button type="submit">
             Add Task
           </button>
         </form>
-        <Overview />
+        {tasks.map(task => <p 
+          style={task.completed? completedStyle : null}
+          key={task.id}>
+            <input type="checkbox" checked={task.completed} onChange={() => handleComplete(task.id)}/>
+            {task.text}
+              <button onClick={() => deleteTask(task.id)}>x</button>
+            </p>)}
+        {/* <Overview tasks={tasks} handleTask={handleComplete}/> */}
       </div>
     );
+
   }
-}
+
 
 export default App;
